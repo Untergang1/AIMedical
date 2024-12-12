@@ -83,6 +83,7 @@ async def register(user_info: UserInput):
 async def get_model_response(chat_input: ChatInput):
     image_paths = []
     src = src_z2e_dict[chat_input.src]
+    username = chat_input.username
     query = chat_input.messages[-1]['text']
     history = chat_input.messages[:-1]
     history = [
@@ -96,8 +97,16 @@ async def get_model_response(chat_input: ChatInput):
 
     rag_prompt = model.rag(query)
     sys_prompt = get_sys_prompt(src)
-    user_info_prompt = None
-    prompt = sys_prompt + "患者问题：\n" + query + "\n你可以参考以下案例：\n" + rag_prompt + "患者问题：\n" + query
+    user_info = user_db.query_name(username)
+    user_sex = user_info['sex']
+    user_age = user_info['age']
+    user_info_prompt = f"性别：{user_sex}，年龄：{user_age}\n"
+    prompt = (sys_prompt
+              + "患者信息：\n" + user_info_prompt
+              + "患者问题：\n" + query
+              + "\n你可以参考以下案例：\n" + rag_prompt
+              + "请用纯文本的方式输出，不要使用markdown格式"
+              )
 
     logger.debug(f"prompt: {prompt}")
     response_text = model.get_response(query, images=image_paths, history=history)

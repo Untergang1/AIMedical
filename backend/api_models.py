@@ -31,18 +31,6 @@ class Sex(str, Enum):
     female = "female"
 
 
-# user_db.insert_user({'username': 'admin',
-#                      'password': '123456',
-#                      'roles': ['admin'],
-#                      'introduction': "introduction",
-#                      'avatar': "https://media1.tenor.com/m/VPW95GiH_BwAAAAC/blue-archive-ni-ga.gif",
-#                      'real_name': "real name",
-#                      'id': "3310022004040400030",
-#                      'sex': 'male',
-#                      'age': 25,
-#                      })
-
-
 class UserInput(BaseModel):
     username: str
     password: str
@@ -70,6 +58,7 @@ class UserOutRes(BaseModel):
 class ChatInput(BaseModel):
     src: str
     messages: List
+    username: str
 
 
 class ChatRes(BaseModel):
