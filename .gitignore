@@ -3,3 +3,5 @@ backend/.idea
 backend/.ipynb_checkpoints
 backend/medical_knowledge.json
 backend/uploaded_images
+backend/*.ipynb
+backend/output.log
