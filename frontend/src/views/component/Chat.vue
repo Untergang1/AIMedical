@@ -20,7 +20,7 @@
       </div>
           <!-- Message Input Section -->
       <div ref='chatInput' class="message-input">
-        <textarea 
+        <input
           v-model="inputMessage" 
           @keyup.enter="sendMessage"
           :placeholder="placeholderText"
@@ -96,8 +96,9 @@
         const data = {
           messages: this.messages,
           src: this.src,
-          username: this.$store.state.username
+          username: this.$store.state.user.name
         }
+        
         sendChat(data).then((res => {
           this.receiveChat(res)
         }))
@@ -147,6 +148,7 @@
     ...mapGetters([
       'realname',
       'avatar',
+      'name'
     ])
     }
   }

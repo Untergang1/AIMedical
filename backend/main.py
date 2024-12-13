@@ -86,10 +86,6 @@ async def get_model_response(chat_input: ChatInput):
     username = chat_input.username
     query = chat_input.messages[-1]['text']
     history = chat_input.messages[:-1]
-    history = [
-        {'role': 'model' if entry['sender'] == 'bot' else entry['sender'], 'parts': entry['text']}
-        for entry in history
-    ]
 
     logger.debug(f'src: {src}')
     logger.debug(f"history: {history}")
