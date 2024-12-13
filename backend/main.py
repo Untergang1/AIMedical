@@ -7,7 +7,7 @@ from log import get_logger
 from prompts import get_sys_prompt
 from user_database import UserDatabase
 from api_models import *
-from utils import src_z2e_dict, sex_e2z_dict
+from utils import sex_e2z_dict
 
 logger = get_logger(__name__)
 
@@ -82,7 +82,7 @@ async def register(user_info: UserInput):
 @app.post("/user/chat", response_model=ChatRes)
 async def get_model_response(chat_input: ChatInput):
     image_paths = []
-    src = src_z2e_dict[chat_input.src]
+    src = chat_input.src
     username = chat_input.username
     query = chat_input.messages[-1]['text']
     history = chat_input.messages[:-1]
@@ -95,12 +95,13 @@ async def get_model_response(chat_input: ChatInput):
     sys_prompt = get_sys_prompt(src)
     user_info = user_db.query_name(username)
     user_sex = user_info['sex']
+    user_sex = sex_e2z_dict[user_sex]
     user_age = user_info['age']
     user_info_prompt = f"性别：{user_sex}，年龄：{user_age}\n"
     prompt = (sys_prompt
+              + "\n你可以参考以下案例：\n" + rag_prompt
               + "患者信息：\n" + user_info_prompt
               + "患者问题：\n" + query
-              + "\n你可以参考以下案例：\n" + rag_prompt
               + "请用纯文本的方式输出，不要使用markdown格式"
               )
 

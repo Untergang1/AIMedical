@@ -41,6 +41,7 @@ class GeminiModel:
         return response.text
 
 
+# OBSOLETE
 class LocalModel:
     def __init__(self):
         self.tokenizer = AutoTokenizer.from_pretrained("qsy71/4-bit_medical_LLaMA3-8B-Chinese-Chat")
