@@ -1,6 +1,7 @@
-from pymongo.mongo_client import MongoClient
 from typing import Dict
+from datetime import datetime
 
+from pymongo.mongo_client import MongoClient
 
 class UserDatabase:
     def __init__(self):
@@ -27,9 +28,27 @@ class UserDatabase:
         else:
             return False
 
-    def verify_usr(self, login_message: Dict):
-        result = self.collection.find_one(login_message)
-        if result:
-            return True
+    def verify_usr(self, username: str, password: str) -> (bool, str):
+        user = self.collection.find_one({'username': username})
+        if not user:
+            return False, "用户不存在"
         else:
-            return False
+            if user['password'] == password:
+                return True, "登录成功"
+            else:
+                return False, "密码错误"
+
+    def insert_medical_record(self, username: str, query: str, response: str):
+        time = datetime.now().strftime("%Y_%m_%d")
+        new_record = {
+            'time': time,
+            'query': query,
+            'response': response
+        }
+        self.collection.update_one(
+            {'username': username},
+            {'$push': {'medical_records': new_record}}
+        )
+
+
+

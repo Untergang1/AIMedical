@@ -1,4 +1,4 @@
-from typing import Optional, List
+from typing import Optional, List, Dict, Literal
 from enum import Enum
 
 from pydantic import BaseModel
@@ -53,6 +53,11 @@ class UserOutput(BaseModel):
 class UserOutRes(BaseModel):
     code: int
     data: UserOutput
+
+
+class MedicalRecordsRes(BaseModel):
+    code: int
+    data: List[Dict[Literal['time', 'query', 'response'], str]]
 
 
 class ChatInput(BaseModel):

@@ -40,19 +40,22 @@ user_db.insert_user({'username': 'admin',
                      'id': "3310022004040400030",
                      'sex': 'male',
                      'age': 25,
+                     'height': 1.72,    # m
+                     'weight': 72,      # kg
+                     'medical_records': []
                      })
 
 
 @app.post("/user/login", response_model=TokenRes | ErrorRes, status_code=status.HTTP_200_OK)
 async def login(message: LoginMessage):
-    result = user_db.verify_usr(message.dict())
-    if result:
+    success, mes = user_db.verify_usr(message.username, message.password)
+    if success:
         logger.info(f"{message.username} log in.")
         token = Token(token=message.username)
         return TokenRes(code=20000, data=token)
     else:
-        logger.error(f"log in failed, {message.username} not exist.")
-        return ErrorRes(code=40000, message="user not exist, register please.")
+        logger.error(f"log in failed, {message.username} {mes}.")
+        return ErrorRes(code=40000, message=mes)
 
 
 @app.get("/user/info", response_model=UserOutRes | ErrorRes, status_code=status.HTTP_200_OK)
@@ -61,9 +64,20 @@ async def query_user(token: str):
     result.pop("_id", None)
     logger.debug(f"res: {result}")
     user_out = UserOutput(**result)
-    logger.debug(f"response user info:{user_out.dict()}")
+    logger.info(f"response user info:{user_out.dict()}")
     if result:
         return UserOutRes(code=20000, data=result)
+    else:
+        return ErrorRes(code=40000, message="user not exist")
+
+
+@app.get("/user/info/medical_records", response_model=MedicalRecordsRes | ErrorRes, status_code=status.HTTP_200_OK)
+async def get_medical_records(username: str):
+    result = user_db.query_name(username)
+    records = result['medical_records']
+    logger.info(f"response user {username}'s medical records: {records}")
+    if result:
+        return MedicalRecordsRes(code=20000, data=records)
     else:
         return ErrorRes(code=40000, message="user not exist")
 
@@ -93,14 +107,29 @@ async def get_model_response(chat_input: ChatInput):
 
     rag_prompt = model.rag(query)
     sys_prompt = get_sys_prompt(src)
+
     user_info = user_db.query_name(username)
     user_sex = user_info['sex']
     user_sex = sex_e2z_dict[user_sex]
     user_age = user_info['age']
-    user_info_prompt = f"性别：{user_sex}，年龄：{user_age}\n"
+    user_height = user_info['height']
+    user_weight = user_info['weight']
+    user_info_prompt = f"性别：{user_sex}，年龄：{user_age}，身高：{user_height}，体重：{user_weight}\n"
+
+    medical_record_prompt = ""
+    medical_records = user_info['medical_records']
+    if len(medical_records) == 0:
+        medical_record_prompt = medical_record_prompt + "无\n"
+    else:
+        for record in medical_records:
+            time = record['time']
+            describe = record['query']
+            medical_record_prompt = medical_record_prompt + time + ": " + describe + "\n"
+
     prompt = (sys_prompt
               + "\n你可以参考以下案例：\n" + rag_prompt
-              + "患者信息：\n" + user_info_prompt
+              + "患者病历：\n" + medical_record_prompt
+              + "患者基本信息：\n" + user_info_prompt
               + "患者问题：\n" + query
               + "请用纯文本的方式输出，不要使用markdown格式"
               )
@@ -108,6 +137,8 @@ async def get_model_response(chat_input: ChatInput):
     logger.debug(f"prompt: {prompt}")
     response_text = model.get_response(query, images=image_paths, history=history)
     logger.info(f"send response: {response_text}")
+
+    user_db.insert_medical_record(username, query, response_text)
 
     return ChatRes(code=20000, text=response_text)
 
