@@ -34,8 +34,10 @@ class Sex(str, Enum):
 class UserInput(BaseModel):
     username: str
     password: str
-    sex: Optional[Sex] = None
-    age: Optional[int] = None
+    sex: Sex
+    age: int
+    height: float   # m
+    weight: float   # kg
     avatar: str
     rname: str
     id: str

@@ -84,12 +84,14 @@ async def get_medical_records(username: str):
 
 @app.post("/user/register", response_model=CommonResponse | ErrorRes)
 async def register(user_info: UserInput):
-    result = user_db.insert_user(user_info.dict())
+    user_info = user_info.dict()
+    user_info['medical_records'] = []
+    result = user_db.insert_user(user_info)
     if result:
-        logger.info(f"{user_info.username} registered")
-        return CommonResponse(response=f"{user_info.username} register successful")
+        logger.info(f"{user_info['username']} registered")
+        return CommonResponse(response=f"{user_info['username']} register successful")
     else:
-        logger.error(f"register failed, {user_info.username} existed")
+        logger.error(f"register failed, {user_info['username']} existed")
         return ErrorRes(info="username has existed.")
 
 
