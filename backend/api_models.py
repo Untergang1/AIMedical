@@ -8,7 +8,8 @@ class Query(BaseModel):
     query: str
 
 
-class CommonResponse(BaseModel):
+class CommonRes(BaseModel):
+    code: int
     response: str
 
 
