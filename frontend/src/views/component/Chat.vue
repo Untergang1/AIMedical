@@ -11,7 +11,7 @@
                 <img :src="getAvatar(message)"/>
               </div>
               <div class="message-content">
-                <p>{{ message.text }}</p>
+                <pre>{{ message.text }}</pre>
               </div>
 
             
@@ -228,7 +228,17 @@
     max-width: 700px;
     border-radius: 8px;
     overflow: hidden;
+
+    white-space: pre-wrap; 
   }
+
+  .message .message-content pre {
+  max-width: 100%;         /* 限制宽度为父容器宽度 */
+  white-space: pre-wrap;   /* 保留换行符并自动换行 */
+  word-wrap: break-word;   /* 强制长单词换行 */
+  overflow-wrap: break-word; /* 支持长单词的换行 */
+}
+
   
   .message.user .message-content {
     background-color: #d1e7ff;
