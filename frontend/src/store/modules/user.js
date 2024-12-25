@@ -8,7 +8,11 @@ const getDefaultState = () => {
     name: '',
     avatar: '',
     realname: 'Joe Biden',
-    id: ''
+    age: '',
+    height: '',
+    weight: '',
+    sex: '',
+    addition: ''
   }
 }
 
@@ -30,8 +34,20 @@ const mutations = {
   SET_RNAME: (state, rname) => {
     state.realname = rname
   },
-  SET_ID: (state, id) => {
-    state.id = id
+  SET_AGE: (state, age) => {
+    state.age = age
+  },
+  SET_HEIGHT: (state, height) => {
+    state.height = height
+  },
+  SET_WEIGHT: (state, weight) => {
+    state.weight = weight
+  },
+  SET_SEX: (state, sex) => {
+    state.sex = sex
+  },
+  SET_AD: (state, ad) => {
+    state.addition = ad
   }
 }
 
@@ -64,18 +80,17 @@ const actions = {
           return reject('Verification failed, please Login again.')
         }
 
-      
-        const name = data.username
-        const avatar = data.avatar
-        const rname = data.real_name
-        const id = data.id
+        const { username, avatar, age, sex, height, weight, addition } = data
 
-        console.log(rname)
-
-        commit('SET_NAME', name)
+        commit('SET_NAME', username)
         commit('SET_AVATAR', avatar)
-        commit('SET_RNAME', rname)
-        commit('SET_ID', id)
+        commit('SET_AGE', age)
+        commit('SET_HEIGHT', height)
+        commit('SET_WEIGHT', weight)
+        commit('SET_SEX', sex)
+        commit('SET_AD', addition)
+
+        console.log(state.weight)
 
         resolve(data)
       }).catch(error => {
@@ -114,4 +129,3 @@ export default {
   mutations,
   actions
 }
-

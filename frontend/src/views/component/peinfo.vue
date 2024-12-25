@@ -13,7 +13,6 @@
                     <el-radio-group v-model="resume.sex">
                       <el-radio label="男">男</el-radio>
                       <el-radio label="女">女</el-radio>
-                      <el-radio label="保密">保密</el-radio>
                     </el-radio-group>
                   </el-form-item>
               </el-row>
@@ -37,8 +36,8 @@
           </el-row>
           <el-row>
             <el-col :span="12">
-              <el-form-item label="电话" prop="phone">
-                <el-input v-model="resume.phone" autocomplete="off"/>
+              <el-form-item label="身高" prop="phone">
+                <el-input v-model="resume.height" autocomplete="off"/>
               </el-form-item>
             </el-col>
           </el-row>
@@ -51,8 +50,8 @@
           </el-row>
           <el-row>
             <el-col :span="12">
-              <el-form-item label="住址" prop="major">
-                <el-input v-model="resume.loc" autocomplete="off"
+              <el-form-item label="体重" prop="major">
+                <el-input v-model="resume.weight" autocomplete="off"
                 
                 />
               </el-form-item>
@@ -62,7 +61,7 @@
           <el-row>
             <el-col :span="12">
               <el-form-item label="备注" prop="major">
-                <el-input v-model="resume.addition" 
+                <el-input v-model="resume.ad" 
                           autocomplete="off"
                           type="textarea"
                           rows="10"
@@ -83,15 +82,15 @@
   export default {
     name: 'pinfo',
     data() {
+      console.log(this.$store.state.user.weight)
       return {
         resume: {
-          sex: '',
-          name: this.$store.state.user.realname,
-          phone: '',
-          age: '',
-          loc: '',
-          addition: '',
-          // 其他字段根据实际需要继续补充
+          sex: this.$store.state.user.sex, // 从 Vuex 中获取用户性别
+          name: this.$store.state.user.name, // 从 Vuex 中获取用户名称
+          age: this.$store.state.user.age , // 从 Vuex 中获取用户年龄
+          height: this.$store.state.user.height, // 从 Vuex 中获取用户身高
+          weight: this.$store.state.user.weight, // 从 Vuex 中获取用户体重
+          ad: this.$store.state.user.addition, // 从 Vuex 中获取用户体重
         },
         rules: {
           // 校验规则可以根据实际情况进行定义
@@ -104,20 +103,33 @@
         this.loading = true
         saveInfo({
           name: this.resume.name,
-          phone: this.resume.phone,
+          height: this.resume.height,
           age: this.resume.age,
           sex: this.resume.sex,
-          loc: this.resume.loc,
-          addition: this.resume.addition
+          weight: this.resume.weight,
+          addition: this.resume.ad
         }).then((res => {
               if (res.code === 20000) {
                 this.loading = false
                 Message.success('保存成功')
-                this.toggleForm()
               } else {
                 this.loading = false
                 Message.error('保存失败')
               }
+
+              this.$store.dispatch('user/getInfo').then(()=> {
+              this.resume.sex =  this.$store.state.user.sex
+              this.resume.name =  this.$store.state.user.name
+              this.resume.age =  this.$store.state.user.age
+              this.resume.height =  this.$store.state.user.height
+              this.resume.weight =  this.$store.state.user.weight
+              this.resume.ad =  this.$store.state.user.addition
+              })
+
+            
+              console.log(this.resume.height)
+
+              //修改data
             }))
       }
       // 其他方法根据实际需要继续补充

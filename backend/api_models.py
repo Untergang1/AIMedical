@@ -44,18 +44,30 @@ class UserInput(BaseModel):
     id: str
 
 
+# username, avatar, real_name, id, age, sex, height, weight
+
 class UserOutput(BaseModel):
-    roles: List[str]
-    introduction: str
-    avatar: str
     username: str
-    real_name: str
-    id: str
+    avatar: str
+    age: int
+    sex: str
+    height: str
+    weight: str
+    addition: str
 
 
 class UserOutRes(BaseModel):
     code: int
     data: UserOutput
+
+
+class UserInfoInput(BaseModel):
+    username: str
+    age: int
+    sex: str
+    height: str
+    weight: str
+    addition: str
 
 
 class MedicalRecordsRes(BaseModel):
@@ -77,3 +89,7 @@ class ChatRes(BaseModel):
 class ErrorRes(BaseModel):
     code: int
     message: str
+
+
+class CodeRes(BaseModel):
+    code: int

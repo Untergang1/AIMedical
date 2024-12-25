@@ -31,19 +31,19 @@ model = GeminiModel()
 # model = None
 user_db = UserDatabase()
 
-user_db.insert_user({'username': 'admin',
-                     'password': '123456',
-                     'roles': ['admin'],
-                     'introduction': "introduction",
-                     'avatar': "https://media1.tenor.com/m/VPW95GiH_BwAAAAC/blue-archive-ni-ga.gif",
-                     'real_name': "real name",
-                     'id': "3310022004040400030",
-                     'sex': 'male',
-                     'age': 25,
-                     'height': 1.72,    # m
-                     'weight': 72,      # kg
-                     'medical_records': []
-                     })
+# user_db.insert_user({'username': 'admin',
+#                      'password': '123456',
+#                      'roles': ['admin'],
+#                      'introduction': "introduction",
+#                      'avatar': "https://media1.tenor.com/m/VPW95GiH_BwAAAAC/blue-archive-ni-ga.gif",
+#                      'real_name': "real name",
+#                      'id': "3310022004040400030",
+#                      'sex': '',
+#                      'age': 25,
+#                      'height': 1.72,    # m
+#                      'weight': 72,      # kg
+#                      'medical_records': []
+#                      })
 
 
 @app.post("/user/login", response_model=TokenRes | ErrorRes, status_code=status.HTTP_200_OK)
@@ -63,10 +63,23 @@ async def query_user(token: str):
     result = user_db.query_name(token)
     result.pop("_id", None)
     logger.debug(f"res: {result}")
+    result['height'] = str(result['height'])
+    result['weight'] = str(result['weight'])
     user_out = UserOutput(**result)
     logger.info(f"response user info:{user_out.dict()}")
     if result:
         return UserOutRes(code=20000, data=result)
+    else:
+        return ErrorRes(code=40000, message="user not exist")
+
+
+@app.post("/user/info", response_model=CodeRes | ErrorRes, status_code=status.HTTP_200_OK)
+async def update_user(user_info: UserInfoInput):
+    logger.debug("111111111111111111111111111111")
+    result = user_db.update_user(user_info.dict())
+    logger.info(f"user info update")
+    if result:
+        return CodeRes(code=20000)
     else:
         return ErrorRes(code=40000, message="user not exist")
 
@@ -112,7 +125,6 @@ async def get_model_response(chat_input: ChatInput):
 
     user_info = user_db.query_name(username)
     user_sex = user_info['sex']
-    user_sex = sex_e2z_dict[user_sex]
     user_age = user_info['age']
     user_height = user_info['height']
     user_weight = user_info['weight']
@@ -133,7 +145,7 @@ async def get_model_response(chat_input: ChatInput):
               + "患者病历：\n" + medical_record_prompt
               + "患者基本信息：\n" + user_info_prompt
               + "患者问题：\n" + query
-              + "请用纯文本的方式输出，不要使用markdown格式"
+              + "\n请用纯文本的方式输出，不要使用markdown格式"
               )
 
     logger.debug(f"prompt: {prompt}")

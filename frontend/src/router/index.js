@@ -136,19 +136,37 @@ export const constantRoutes = [
       path: 'dep1',
       component: () => import('@/views/department/dep1/index'),
       name: 'dep1',
-      meta: { title: '呼吸外科' }
+      meta: { title: '儿科' }
     },
     {
       path: 'dep2',
       component: () => import('@/views/department/dep2/index'),
       name: 'dep2',
-      meta: { title: '妇产科' }
+      meta: { title: '内科' }
     },
     {
       path: 'dep3',
       component: () => import('@/views/department/dep3/index'),
       name: 'dep3',
-      meta: { title: '耳鼻喉科' }
+      meta: { title: '外科' }
+    },
+    {
+      path: 'dep4',
+      component: () => import('@/views/department/dep4/index'),
+      name: 'dep4',
+      meta: { title: '眼科' }
+    },
+    {
+      path: 'dep5',
+      component: () => import('@/views/department/dep5/index'),
+      name: 'dep5',
+      meta: { title: '牙科' }
+    },
+    {
+      path: 'dep6',
+      component: () => import('@/views/department/dep6/index'),
+      name: 'dep6',
+      meta: { title: '皮肤科' }
     }]
   },
   {

@@ -27,21 +27,21 @@
           autofocus
           :disabled="isWaitingForBotReply"
         />
-
+<!-- 
         <button 
         :class="{ 'uploaded': uploadedImage, 'default': !uploadedImage }" 
         @click="triggerUpload"
         :disabled="isWaitingForBotReply"
       >
         {{ uploadedImage ? 'Change' : 'Upload' }}
-      </button>
-      <input 
+      </button> -->
+      <!-- <input 
         type="file" 
         ref="fileInput" 
         @change="handleFileUpload" 
         style="display: none;" 
         accept="image/*" 
-      />
+      /> -->
       </div>
     </div>
   </template>
@@ -50,6 +50,8 @@
   import { nextTick } from "vue";
   import { mapGetters } from 'vuex'
   import { sendChat } from '@/api/user';
+
+
   export default {
     name: 'Chat',
     props: {
@@ -148,7 +150,9 @@
     ...mapGetters([
       'realname',
       'avatar',
-      'name'
+      'name',
+      'age',
+      'height'
     ])
     }
   }
@@ -245,7 +249,7 @@
     width: 80%; /* 占满整个宽度 */
   }
   
-  .message-input textarea {
+  .message-input input {
     margin-left: 10px;
     margin-right: 10px;
     width: 80%;
@@ -258,12 +262,12 @@
     background-color: #f5f5f5;
   }
   
-  .message-input textarea:focus {
+  .message-input input:focus {
     outline: none;
     background-color: #e0e0e0;
   }
 
-  .message-input textarea:disabled {
+  .message-input input:disabled {
     background-color: #e0e0e0;
     color: #a0a0a0;
     cursor: not-allowed;

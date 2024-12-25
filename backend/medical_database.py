@@ -22,9 +22,12 @@ class EmbeddingModel:
             return embedding.tolist()
 
 
+mongodb_port = 34861
+
+
 class MedicalDatabase:
     def __init__(self):
-        uri = f"mongodb://localhost:35533/?directConnection=true&serverSelectionTimeoutMS=2000"
+        uri = f"mongodb://localhost:{mongodb_port}/?directConnection=true&serverSelectionTimeoutMS=2000"
         self.client = MongoClient(uri)
         self.client.admin.command("ping")
         self.collection = self.client['medical_db']['medical_knowledge']

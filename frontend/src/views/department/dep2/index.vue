@@ -1,6 +1,6 @@
 <template>
     <div class="dep2-container">
-      <Chat src="妇产科"/>
+      <Chat src="内科"/>
     </div>
   </template>
   
@@ -9,7 +9,7 @@
   import Chat from '@/views/component/Chat.vue';  // Corrected path
   
   export default {
-    name: 'dep2',
+    name: '内科',
     components: {
       Chat
     },

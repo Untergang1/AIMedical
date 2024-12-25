@@ -1,6 +1,6 @@
 <template>
-    <div class="dep1-container">
-      <Chat src='儿科' />
+    <div class="dep3-container">
+      <Chat src="皮肤科"/>
     </div>
   </template>
   
@@ -9,7 +9,7 @@
   import Chat from '@/views/component/Chat.vue';  // Corrected path
   
   export default {
-    name: '儿科',
+    name: '牙科',
     components: {
       Chat
     },
@@ -22,7 +22,7 @@
   </script>
   
   <style lang="scss" scoped>
-  .dep1 {
+  .dep3 {
     &-container {
       overflow-y:hidden;
     }

@@ -10,11 +10,11 @@ export function login(data) {
 
 export function saveInfo(data){
   const sendData = {
-    name: data.name,
-    phone: data.phone,
+    username: data.name,
+    height: data.height,
     age: data.age,
     sex: data.sex,
-    loc: data.loc,
+    weight: data.weight,
     addition: data.addition
   }
   return request({
