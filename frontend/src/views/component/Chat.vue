@@ -11,7 +11,7 @@
                 <img :src="getAvatar(message)"/>
               </div>
               <div class="message-content">
-                <pre>{{ message.text }}</pre>
+                <p>{{ message.text }}</p>
               </div>
 
             
