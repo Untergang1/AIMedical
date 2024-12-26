@@ -46,7 +46,6 @@ class UserDatabase:
         else:
             return True
 
-
     def verify_usr(self, username: str, password: str) -> (bool, str):
         user = self.collection.find_one({'username': username})
         if not user:

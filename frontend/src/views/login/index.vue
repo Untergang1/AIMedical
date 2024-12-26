@@ -78,35 +78,6 @@
         />
       </el-form-item>
 
-      <el-form-item v-if="!isLoginForm" prop="password">
-        <span class="svg-container">
-          <svg-icon icon-class="password" />
-        </span>
-        <el-input
-          :key="passwordType"
-          v-model="loginForm.pname"
-          type="text"
-          placeholder="请输入你的真实姓名"
-          name="password"
-          tabindex="2"
-          auto-complete="on"
-        />
-      </el-form-item>
-
-      <el-form-item prop="password" v-if="!isLoginForm">
-        <span class="svg-container">
-          <svg-icon icon-class="password" />
-        </span>
-        <el-input
-          :key="passwordType"
-          v-model="loginForm.id"
-          type="text"
-          placeholder="请输入你的身份证号"
-          name="id"
-          tabindex="2"
-          auto-complete="on"
-        />
-      </el-form-item>
 
 
       <!-- 登录/注册按钮 -->
@@ -194,7 +165,6 @@ export default {
       })
     },
     clearAll(){
-      console.log('fuck you')
       this.loginForm.password = ''
       this.loginForm.username = ''
       this.loginForm.repassword = ''

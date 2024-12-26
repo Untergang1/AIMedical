@@ -4,13 +4,14 @@ from enum import Enum
 from pydantic import BaseModel
 
 
-class Query(BaseModel):
-    query: str
-
-
 class CommonRes(BaseModel):
     code: int
     response: str
+
+
+class LogoutRes(BaseModel):
+    code: int
+    data: str
 
 
 class Token(BaseModel):
@@ -28,46 +29,39 @@ class LoginMessage(BaseModel):
 
 
 class Sex(str, Enum):
-    male = "male"
-    female = "female"
+    male = "男"
+    female = "女"
 
 
-class UserInput(BaseModel):
+class RegisterInput(BaseModel):
     username: str
     password: str
-    sex: Sex
-    age: int
-    height: float   # m
-    weight: float   # kg
-    avatar: str
-    rname: str
-    id: str
 
 
 # username, avatar, real_name, id, age, sex, height, weight
 
-class UserOutput(BaseModel):
+class UserInfoOutput(BaseModel):
     username: str
-    avatar: str
-    age: int
-    sex: str
-    height: str
-    weight: str
-    addition: str
+    avatar: Optional[str] = "https://t8.baidu.com/it/u=2209273868,3140520502&fm=193"
+    age: Optional[int] = None
+    sex: Optional[Sex] = None
+    height: Optional[str] = None
+    weight: Optional[str] = None
+    addition: Optional[str] = None
 
 
-class UserOutRes(BaseModel):
+class UserInfoOutRes(BaseModel):
     code: int
-    data: UserOutput
+    data: UserInfoOutput
 
 
 class UserInfoInput(BaseModel):
     username: str
     age: int
-    sex: str
+    sex: Sex
     height: str
     weight: str
-    addition: str
+    addition: Optional[str] = None
 
 
 class MedicalRecordsRes(BaseModel):

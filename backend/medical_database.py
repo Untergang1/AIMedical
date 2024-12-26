@@ -60,7 +60,7 @@ class MedicalDatabase:
             },
             {
                 "$match": {
-                    "score": {"$gt": 0.7}
+                    "score": {"$gt": 0.75}
                 }
             },
             {

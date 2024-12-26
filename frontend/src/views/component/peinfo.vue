@@ -17,7 +17,7 @@
                   </el-form-item>
               </el-row>
               <el-col>
-                <el-button type="primary" :loading="loading" icon="el-icon-edit" class="savebutton" @click="savePinfo"></el-button>
+                <el-button type="primary" :loading="loading" class="savebutton" @click="savePinfo"> 保存 </el-button>
               </el-col>
             </el-col>
             <el-col :span="5">
@@ -174,6 +174,7 @@
   }
   .savebutton {
     width: 100px;
+    margin-bottom: 5px;
   }
   /* In your component's <style scoped> section */
   

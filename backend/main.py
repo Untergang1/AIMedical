@@ -1,7 +1,6 @@
-from fastapi import FastAPI, File, UploadFile, Form, Response, status
-from model import GeminiModel
+from fastapi import FastAPI, status
+from model import GeminiModel,DoubaoModel
 from fastapi.middleware.cors import CORSMiddleware
-from tempfile import NamedTemporaryFile
 
 from log import get_logger
 from prompts import get_sys_prompt
@@ -27,8 +26,8 @@ app.add_middleware(
 )
 
 
-model = GeminiModel()
-# model = None
+# model = GeminiModel()
+model = DoubaoModel()
 user_db = UserDatabase()
 
 # user_db.insert_user({'username': 'admin',
@@ -58,24 +57,22 @@ async def login(message: LoginMessage):
         return ErrorRes(code=40000, message=mes)
 
 
-@app.get("/user/info", response_model=UserOutRes | ErrorRes, status_code=status.HTTP_200_OK)
+@app.get("/user/info", response_model=UserInfoOutRes | ErrorRes, status_code=status.HTTP_200_OK)
 async def query_user(token: str):
     result = user_db.query_name(token)
     result.pop("_id", None)
-    logger.debug(f"res: {result}")
-    result['height'] = str(result['height'])
-    result['weight'] = str(result['weight'])
-    user_out = UserOutput(**result)
+    result['height'] = str(result['height']) if 'height' in result else None
+    result['weight'] = str(result['weight']) if 'weight' in result else None
+    user_out = UserInfoOutput(**result)
     logger.info(f"response user info:{user_out.dict()}")
     if result:
-        return UserOutRes(code=20000, data=result)
+        return UserInfoOutRes(code=20000, data=result)
     else:
         return ErrorRes(code=40000, message="user not exist")
 
 
 @app.post("/user/info", response_model=CodeRes | ErrorRes, status_code=status.HTTP_200_OK)
 async def update_user(user_info: UserInfoInput):
-    logger.debug("111111111111111111111111111111")
     result = user_db.update_user(user_info.dict())
     logger.info(f"user info update")
     if result:
@@ -96,7 +93,7 @@ async def get_medical_records(username: str):
 
 
 @app.post("/user/register", response_model=CommonRes | ErrorRes)
-async def register(user_info: UserInput):
+async def register(user_info: RegisterInput):
     user_info = user_info.dict()
     user_info['medical_records'] = []
     result = user_db.insert_user(user_info)
@@ -108,54 +105,61 @@ async def register(user_info: UserInput):
         return ErrorRes(code=40000, message="username has existed.")
 
 
-@app.post("/user/chat", response_model=ChatRes)
+@app.post("/user/chat", response_model=ChatRes | ErrorRes)
 async def get_model_response(chat_input: ChatInput):
-    image_paths = []
     src = chat_input.src
     username = chat_input.username
     query = chat_input.messages[-1]['text']
-    history = chat_input.messages[:-1]
+    history = chat_input.messages[1:-1]
 
     logger.debug(f'src: {src}')
     logger.debug(f"history: {history}")
-    logger.info(f"get query: {query}")
+    logger.info(f"query: {query}")
 
-    rag_prompt = model.rag(query)
+    rag_prompt = model.rag(query, history)
     sys_prompt = get_sys_prompt(src)
 
     user_info = user_db.query_name(username)
+    if 'sex' not in user_info:
+        return ErrorRes(code=40000, message="请先完善个人信息")
     user_sex = user_info['sex']
     user_age = user_info['age']
     user_height = user_info['height']
     user_weight = user_info['weight']
     user_info_prompt = f"性别：{user_sex}，年龄：{user_age}，身高：{user_height}，体重：{user_weight}\n"
 
-    medical_record_prompt = ""
-    medical_records = user_info['medical_records']
-    if len(medical_records) == 0:
-        medical_record_prompt = medical_record_prompt + "无\n"
-    else:
-        for record in medical_records:
-            time = record['time']
-            describe = record['query']
-            medical_record_prompt = medical_record_prompt + time + ": " + describe + "\n"
+    # medical_record_prompt = ""
+    # medical_records = user_info['medical_records']
+    # if len(medical_records) == 0:
+    #     medical_record_prompt = medical_record_prompt + "无\n"
+    # else:
+    #     for record in medical_records:
+    #         time = record['time']
+    #         describe = record['query']
+    #         medical_record_prompt = medical_record_prompt + time + ": " + describe + "\n"
 
     prompt = (sys_prompt
               + "\n你可以参考以下案例：\n" + rag_prompt
-              + "患者病历：\n" + medical_record_prompt
+              # + "患者病历：\n" + medical_record_prompt
               + "患者基本信息：\n" + user_info_prompt
-              + "患者问题：\n" + query
-              + "\n请用纯文本的方式输出，不要使用markdown格式"
+              + "患者问题（请结合对话记录）：\n" + query
               )
 
     logger.debug(f"prompt: {prompt}")
-    response_text = model.get_response(query, images=image_paths, history=history)
+    response_text = model.get_response(prompt, history=history)
+
+    response_text = response_text.replace('*', '')
+
     logger.info(f"send response: {response_text}")
 
-    user_db.insert_medical_record(username, query, response_text)
+    # user_db.insert_medical_record(username, query, response_text)
 
     return ChatRes(code=20000, text=response_text)
 
+
+@app.post("/user/logout", response_model=LogoutRes)
+def logout():
+    return LogoutRes(code=20000, data="success")
 
 # 处理用户输入并调用模型（支持可选的图片上传）
 # @app.post("/user/chat", response_model=CommonResponse)

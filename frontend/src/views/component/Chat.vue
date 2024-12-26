@@ -11,7 +11,7 @@
                 <img :src="getAvatar(message)"/>
               </div>
               <div class="message-content">
-                <p>{{ message.text }}</p>
+                <pre>{{ message.text }}</pre>
               </div>
 
             
@@ -60,7 +60,7 @@
     data() {
       return {
         messages: [
-          { text: `您好，${this.$store.state.user.realname}！我是您的AI医生，很高兴为您提供健康咨询。请告诉我您目前的症状或健康问题，我会尽力为您提供建议和帮助。`, sender: 'bot' },
+          { text: `您好，${this.$store.state.user.name}！我是您的AI医生，很高兴为您提供健康咨询。请告诉我您目前的症状或健康问题，我会尽力为您提供建议和帮助。`, sender: 'bot' },
         ],
         inputMessage: '',
         isWaitingForBotReply: false, // 用于禁用输入框
@@ -229,7 +229,14 @@
     border-radius: 8px;
     overflow: hidden;
   }
-  
+
+  .message .message-content pre {
+  white-space: pre-wrap;       /* 保留空格和换行符，但会自动换行 */
+  word-wrap: break-word;       /* 在长单词或URL处自动换行 */
+  overflow-wrap: break-word;   /* 用于现代浏览器的自动换行 */
+  max-width: 100%;             /* 限制内容宽度不超出父元素 */
+}
+
   .message.user .message-content {
     background-color: #d1e7ff;
   }

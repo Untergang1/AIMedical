@@ -42,11 +42,9 @@ export function register(data) {
   const sendData = {
     username: data.username,
     password: data.password,
-    name: data.name,
-    id: data.id
   }
   return request({
-    url: '/vue-admin-template/user/register',
+    url: '/user/register',
     method: 'post',
     headers: {
       'Content-Type': 'application/json' // Set the Content-Type to application/json
@@ -65,7 +63,7 @@ export function getInfo(token) {
 
 export function logout() {
   return request({
-    url: '/vue-admin-template/user/logout',
+    url: '/user/logout',
     method: 'post'
   })
 }
