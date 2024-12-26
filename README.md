@@ -1,39 +1,3 @@
-## TODO List
-
-### 修复对话框
-
-### 添加科室选项 
-
-儿科，内科，外科，眼科，牙科，皮肤科
-
-### 添加个人信息选项
-
-注册时添加。 包括性别，年龄，身高，体重。
-
-后端接口：
-
-```
-@app.post("/user/register", response_model=CommonResponse | ErrorRes)
-async def register(user_info: UserInput):
-...
-
-class Sex(str, Enum):
-    male = "male"
-    female = "female"
-
-
-class UserInput(BaseModel):
-    username: str
-    password: str
-    sex: Sex
-    age: int
-    height: float   # m
-    weight: float   # kg
-    avatar: str
-    rname: str
-    id: str
-```
-
 ### 查看病历
 
 后端接口：
