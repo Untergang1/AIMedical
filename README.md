@@ -1,42 +1,41 @@
+# 智能医疗诊断系统
+
+## 项目简介
+
+本项目是一个基于大语言模型和医学知识数据库的智能医疗诊断系统。用户可以通过输入症状或健康问题，系统会结合医学知识数据库和大语言模型，提供科室推荐和诊断建议。系统还支持用户注册、登录、查看历史记录以及更新基本信息等功能。
+
+## 主要功能
+
+1. 用户模块：
+* 用户输入症状或健康问题。
+* 注册/登录功能。
+* 录入/更新基本信息（如身高、体重等）。 
+* 查看历史诊断记录。
+* 
+2. 平台模块：
+* 大语言模型处理用户输入。
+* 医学知识数据库支持科室推荐和诊断建议。
+* 反馈循环，根据用户反馈更新诊断建议。
+
+3. 科室模块：
+* 支持多个科室（如儿科、内科、外科等）的专业诊断。
+
+## 技术栈
+
+前端框架：Vue
+
+后端框架：FastAPI
+
+数据库：MongoDB
+
+向量化工具：Sentence-Transformers
+
+大语言模型：doubao-pro
+
+医疗数据来源：huggingface, Roselia-penguin/medical-dialogue-Chinese
+
 ## TODO List
 
-### 查看病历
+* 查看病历
+* 添加上传图片功能
 
-后端接口：
-
-```
-@app.get("/user/info/medical_records", response_model=MedicalRecordsRes | ErrorRes, status_code=status.HTTP_200_OK)
-async def get_medical_records(username: str):
-...
-
-class MedicalRecordsRes(BaseModel):
-    code: int
-    data: List[Dict[Literal['time', 'query', 'response'], str]]
-    
-class ErrorRes(BaseModel):
-    code: int
-    message: str
-```
-
-### 添加上传图片功能
-
-后端接口：
-
-```
-@app.post("/user/chat", response_model=ChatRes)
-async def get_model_response(
-    src: str = Form(...),
-    messages: List[str] = Form(...),
-    image: UploadFile = File(None),
-    username: str = Form(...),
-):
-...
-
-class ChatRes(BaseModel):
-    code: int
-    text: str
-    
-class ErrorRes(BaseModel):
-    code: int
-    message: str
-```
